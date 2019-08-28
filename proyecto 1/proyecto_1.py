@@ -31,6 +31,8 @@ get_coef = read_coef.read()
 
 temp = re.findall(r'(-?\d*)x', get_coef)
 temp += re.findall(r'(-?\d*) ', get_coef)
-
+new = re.findall(r'(\^\d+)', get_coef)
+print(new)
+print(temp)
 coeficientes = list(map(int, temp))
 print(poly(coeficientes))
