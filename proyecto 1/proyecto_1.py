@@ -51,12 +51,11 @@ if len(pot1) == len(potx):  # agarrar la potencia 1 dek valro x
 else:
     potencias.append(1)
 
-
 j = int(ptnc)   # se tooma la mayor potencia
 fixpow = []
-for cont in range(j+1):   #desde i en el rango de 0 a la potencia maxima
-    if cont in potencias:  #si contador existe en la lista potencias
-        fixpow.append(cont)   #agrega count a fixpow
+for cont in range(j+1):   # desde i en el rango de 0 a la potencia maxima
+    if cont in potencias:  # si contador existe en la lista potencias
+        fixpow.append(cont)   #a grega count a fixpow
     else:
         fixpow.append(0)
 
