@@ -5,7 +5,10 @@ Update 1:
 
   - Ya podemos leer los polinomios asi como el grado de este
   
+Update 2:
+  - Lista de coeficientes arreglados
+
 Bugs o errores
 
-  - Aún no podemos manejar el polinomo bien si nos falta un coeficiente
+  - None (yet)
 
