@@ -45,6 +45,9 @@ print(poly(coeficientes))  # mando a llamar la funcion e imprimo el resultado
 
 if len(pot1) != len(potx):  # agarrar la potencia 1 dek valro x
     potencias.append(1)
+elif len(pot1) == len(potx) and len(pot1)< len(coeficientes):
+    potencias.append(0)
+
 
 # Arregla las potencias
 fixpow = []
@@ -52,7 +55,7 @@ for cont in range(grado):   # desde i en el rango de 0 a la potencia maxima
     if cont in potencias:  # si contador existe en la lista potencias
         fixpow.append(cont)   # a grega count a fixpow
     else:
-        fixpow.append(0)
+        fixpow.append(None)
 fixpow.reverse()
 
 #def fixcoef
@@ -62,6 +65,13 @@ if len(potencias) == len(coeficientes):
 else:
     potencias.append(0)
     DicCoefPow = dict(zip(potencias, coeficientes))
+
+for cont in fixpow:
+    clave = DicCoefPow.get(cont)
+    if clave != None:
+        fixcoef.append(clave)
+    else:
+        fixcoef.append(0)
 
 for key in DicCoefPow:
     print(key, ":", DicCoefPow[key])
