@@ -1,7 +1,4 @@
 import re
-#ptnc potencia mas grande
-#potencias lista con todas las potencias
-#coeficientes lista con todos los coeficientes
 
 
 def poly(p, var_string='x'):
@@ -40,50 +37,31 @@ potx = re.findall(r'(x\^)', get_coef)
 pot1 = re.findall(r'(x\d*)', get_coef)
 
 del pot[0]  # borra un lugar de la lista ocupado por un espacio en blanco
-ptnc = pot[0]  # guardo la primer potencia para poder trabajar con ella
+grado = int(pot[0]) + 1   # guardo la primer potencia para poder trabajar con ella
 potencias = list(map(int, pot))  # convierte la lista de strings de potencias en lista de ints
 coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficientes en lista de ints
+print(get_coef)
 print(poly(coeficientes))  # mando a llamar la funcion e imprimo el resultado
 
-if len(pot1) == len(potx):  # agarrar la potencia 1 dek valro x
-    print('sobra una x sin potencia')
-else:
+if len(pot1) != len(potx):  # agarrar la potencia 1 dek valro x
     potencias.append(1)
 
-j = int(ptnc)   # se tooma la mayor potencia
+# Arregla las potencias
 fixpow = []
-for cont in range(j+1):   # desde i en el rango de 0 a la potencia maxima
+for cont in range(grado):   # desde i en el rango de 0 a la potencia maxima
     if cont in potencias:  # si contador existe en la lista potencias
         fixpow.append(cont)   # a grega count a fixpow
     else:
         fixpow.append(0)
-
 fixpow.reverse()
+
+#def fixcoef
 fixcoef = []
-con = 1
-for i in range(j+1):
-    if i > 0:
-        if fixpow[con] != 0 in fixpow:
-            fixcoef.append(coeficientes[con])
+if len(potencias) == len(coeficientes):
+    DicCoefPow = dict(zip(potencias, coeficientes))
+else:
+    potencias.append(0)
+    DicCoefPow = dict(zip(potencias, coeficientes))
 
-        else:
-            con -= 2
-            coeficientes.append(0)
-            fixcoef.append(0)
-            con += 1
-
-    elif fixpow[i] != 0 in fixpow:
-        fixcoef.append(coeficientes[i])
-    else:
-        coeficientes.append(0)
-        fixcoef.append(0)
-
-
-
-
-
-
-
-print(coeficientes)
-print(fixpow)
-print(fixcoef)
+for key in DicCoefPow:
+    print(key, ":", DicCoefPow[key])
