@@ -111,4 +111,4 @@ else:
 
 print(fixpow)
 print(fixcoef)
-#print(poly(fixcoef))
+print(poly(fixcoef))
