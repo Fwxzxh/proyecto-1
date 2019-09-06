@@ -1,6 +1,5 @@
 import re
 
-
 def poly(p, var_string='x'):
     res = ''
     first_pow = len(p) - 1
@@ -25,13 +24,20 @@ def poly(p, var_string='x'):
             res += sign + str_coef + str_power
     return res
 
-
 read_coef = open("C:\\Archivos\\coeficientes.txt", "r", encoding="utf-8")
 get_coef = read_coef.read()
 read_coef.close()
 
 temp = re.findall(r'(-?\d*)x', get_coef) + re.findall(r'(-?\d*) ', get_coef) # toma los coeficientes
 pot = ("".join(re.findall(r'(\^\d*)', get_coef))).split("^")  # toma las potencias
+
+#arreglamos temp con espacio
+for i in range(len(temp)):
+    if temp[i] == '' or temp[i] == '-':
+        if temp[i] == '':
+            temp[i] = 1
+
+
 
 potx = re.findall(r'(x\^)', get_coef)
 pot1 = re.findall(r'(x\d*)', get_coef)
@@ -43,29 +49,39 @@ coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficie
 print(get_coef)
 print(poly(coeficientes))  # mando a llamar la funcion e imprimo el resultado
 
-if len(pot1) != len(potx):  # agarrar la potencia 1 dek valro x
+if len(pot1) != len(potx):  # agarrar la potencia 1 dek valro x      pot1 numero de x, potx numero de x con un ^
     potencias.append(1)
-elif len(pot1) == len(potx) and len(pot1)< len(coeficientes):
+elif len(pot1) == len(potx) and len(potx)< len(coeficientes) and len(potx)>1:  #si el numero de x y de x^ es igual y el numero de coef es mayor al de potencias
     potencias.append(0)
+elif len(pot1) == len(potx) and len(potx)==1:
+    print("es una unica x ")
 
+#def Dic
+#armamos el dicionario que relaciona coef y potencias
+if len(potencias) == len(coeficientes):
+    DicCoefPow = dict(zip(potencias, coeficientes))
+else:
+    potencias.append(0) #agrego un 0 para len(potencias) == len(coeficientes) y que sea posible armar el diccionario
+    DicCoefPow = dict(zip(potencias, coeficientes))
+    potencias.remove(0) #quito el cero que agregue arriba para que la variable potencias solo tenga las potencias necesarias
+    # imprime el diccionario
+for key in DicCoefPow:
+    print(key, ":", DicCoefPow[key])
 
-# Arregla las potencias
+#def FixPotencias
+# Arregla las potencias ////////////////////////////////(fixpow)
 fixpow = []
-for cont in range(grado):   # desde i en el rango de 0 a la potencia maxima
+for cont in range(grado+1):   # desde i en el rango de 0 a la potencia maxima
     if cont in potencias:  # si contador existe en la lista potencias
         fixpow.append(cont)   # a grega count a fixpow
     else:
         fixpow.append(None)
+#las dejamos ordenadas sin Nones
+fixpow = sorted(set(potencias))
 fixpow.reverse()
 
-#def fixcoef
+#armamos fixcoef///////////////////////////////////////(fixcoef)
 fixcoef = []
-if len(potencias) == len(coeficientes):
-    DicCoefPow = dict(zip(potencias, coeficientes))
-else:
-    potencias.append(0)
-    DicCoefPow = dict(zip(potencias, coeficientes))
-
 for cont in fixpow:
     clave = DicCoefPow.get(cont)
     if clave != None:
@@ -73,5 +89,6 @@ for cont in fixpow:
     else:
         fixcoef.append(0)
 
-for key in DicCoefPow:
-    print(key, ":", DicCoefPow[key])
+print(fixpow)
+print(fixcoef)
+print(poly(fixcoef))
