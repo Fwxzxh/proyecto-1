@@ -14,5 +14,5 @@ Update 2.5:
 Bugs o errores
 
   - Arreglar que para x com argumento 1 en medio de la suma detecte el coef 1 y no solo lo haga en la primera
-    * ej 3x^2+x^3+25  
+    * ej 3x^2+x^3+25 
 
