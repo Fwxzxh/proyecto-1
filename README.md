@@ -7,8 +7,12 @@ Update 1:
   
 Update 2:
   - Lista de coeficientes arreglados
+  
+Update 2.5:
+- Parece ser que ya funciona bien en todos los casos, intentar romper.
 
 Bugs o errores
 
-  - None (yet)
+  - Arreglar que para x com argumento 1 en medio de la suma detecte el coef 1 y no solo lo haga en la primera
+    * ej 3x^2+x^3+25  
 

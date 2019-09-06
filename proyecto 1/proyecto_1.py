@@ -49,12 +49,14 @@ coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficie
 print(get_coef)
 print(poly(coeficientes))  # mando a llamar la funcion e imprimo el resultado
 
+Bandera = False
 if len(pot1) != len(potx):  # agarrar la potencia 1 dek valro x      pot1 numero de x, potx numero de x con un ^
     potencias.append(1)
 elif len(pot1) == len(potx) and len(potx)< len(coeficientes) and len(potx)>1:  #si el numero de x y de x^ es igual y el numero de coef es mayor al de potencias
     potencias.append(0)
 elif len(pot1) == len(potx) and len(potx)==1:
     print("es una unica x ")
+    Bandera = True       # if True es ua sola x y puede (o no) contener algun otro termino
 
 #def Dic
 #armamos el dicionario que relaciona coef y potencias
@@ -82,13 +84,31 @@ fixpow.reverse()
 
 #armamos fixcoef///////////////////////////////////////(fixcoef)
 fixcoef = []
-for cont in fixpow:
-    clave = DicCoefPow.get(cont)
-    if clave != None:
-        fixcoef.append(clave)
-    else:
-        fixcoef.append(0)
+if  Bandera == True:     #si bandera True, agrega un elemento de control a fixpow, para incluir el termino independiente
+    if len(coeficientes) > len(potencias): #si el # de Coef es mayor al de potencias ej 3x^2+3
+        fixpow.append(0)        #se le agrega un 0 a las potencias para ordenarlas con el diccionario
+        for cont in fixpow:
+            clave = DicCoefPow.get(cont)
+            if clave != None:
+                fixcoef.append(clave)
+            else:
+                fixcoef.append(0)
+        fixpow.remove(0)        #se le quita el 0
+    elif len(coeficientes) == len(potencias):   #si el # de coef es igual al de potencias ej 2x^3
+        for cont in fixpow:
+            clave = DicCoefPow.get(cont)
+            if clave != None:
+                fixcoef.append(clave)
+            else:
+                fixcoef.append(0)
+else:
+    for cont in fixpow:
+        clave = DicCoefPow.get(cont)
+        if clave != None:
+            fixcoef.append(clave)
+        else:
+            fixcoef.append(0)
 
 print(fixpow)
 print(fixcoef)
-print(poly(fixcoef))
+#print(poly(fixcoef))
