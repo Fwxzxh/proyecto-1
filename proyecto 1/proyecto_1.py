@@ -91,4 +91,4 @@ for cont in fixpow:
 
 print(fixpow)
 print(fixcoef)
-print(poly(fixcoef))
+#print(poly(fixcoef))
