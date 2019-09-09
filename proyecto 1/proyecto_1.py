@@ -37,13 +37,11 @@ for i in range(len(temp)):
         if temp[i] == '':
             temp[i] = 1
 
-
-
 potx = re.findall(r'(x\^)', get_coef)
 pot1 = re.findall(r'(x\d*)', get_coef)
 
 del pot[0]  # borra un lugar de la lista ocupado por un espacio en blanco
-grado = int(pot[0]) + 1   # guardo la primer potencia para poder trabajar con ella
+#grado = int(pot[0]) + 1   # guardo la primer potencia para poder trabajar con ella
 potencias = list(map(int, pot))  # convierte la lista de strings de potencias en lista de ints
 coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficientes en lista de ints
 print(get_coef)
@@ -70,44 +68,26 @@ else:
 for key in DicCoefPow:
     print(key, ":", DicCoefPow[key])
 
+potencias.sort()
+potencias.reverse()
+grado = potencias[0]
+
 #def FixPotencias
 # Arregla las potencias ////////////////////////////////(fixpow)
 fixpow = []
-for cont in range(grado+1):   # desde i en el rango de 0 a la potencia maxima
-    if cont in potencias:  # si contador existe en la lista potencias
-        fixpow.append(cont)   # a grega count a fixpow
-    else:
-        fixpow.append(None)
-#las dejamos ordenadas sin Nones
-fixpow = sorted(set(potencias))
+for cont in range(grado+1):
+    fixpow.append(cont)
 fixpow.reverse()
 
-#armamos fixcoef///////////////////////////////////////(fixcoef)
+#def fixcoef
+#Arregla los coeficientes /////////////////////////////(fixcoef)
 fixcoef = []
-if  Bandera == True:     #si bandera True, agrega un elemento de control a fixpow, para incluir el termino independiente
-    if len(coeficientes) > len(potencias): #si el # de Coef es mayor al de potencias ej 3x^2+3
-        fixpow.append(0)        #se le agrega un 0 a las potencias para ordenarlas con el diccionario
-        for cont in fixpow:
-            clave = DicCoefPow.get(cont)
-            if clave != None:
-                fixcoef.append(clave)
-            else:
-                fixcoef.append(0)
-        fixpow.remove(0)        #se le quita el 0
-    elif len(coeficientes) == len(potencias):   #si el # de coef es igual al de potencias ej 2x^3
-        for cont in fixpow:
-            clave = DicCoefPow.get(cont)
-            if clave != None:
-                fixcoef.append(clave)
-            else:
-                fixcoef.append(0)
-else:
-    for cont in fixpow:
-        clave = DicCoefPow.get(cont)
-        if clave != None:
-            fixcoef.append(clave)
-        else:
-            fixcoef.append(0)
+for i in range(grado+1):
+    if DicCoefPow.get(i) in coeficientes:
+        fixcoef.append(DicCoefPow.get(i))
+    else:
+        fixcoef.append(0)
+fixcoef.reverse()
 
 print(fixpow)
 print(fixcoef)

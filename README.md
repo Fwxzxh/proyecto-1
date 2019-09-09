@@ -11,6 +11,8 @@ Update 2:
 Update 2.5:
 - Parece ser que ya funciona bien en todos los casos, intentar romper.
 
+Update 2.7:
+ - agregado formato para libreria de math
 Bugs o errores
 
   - Arreglar que para x com argumento 1 en medio de la suma detecte el coef 1 y no solo lo haga en la primera
