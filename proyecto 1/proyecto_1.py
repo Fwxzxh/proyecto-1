@@ -4,7 +4,6 @@ import numpy as np
 from scipy import optimize
 
 
-
 def getcoef():
     read_coef = open("C:\\Archivos\\coeficientes.txt", "r", encoding="utf-8")
     get_coef = read_coef.read()
@@ -70,16 +69,16 @@ def getcoef():
     return fixcoef
 
 
-def syntheticdiv(dividend, divisor):
-    pol = list(dividend)
-    ao = divisor
-    newcoef = []
-    for i in range(len(pol)):
-        if i == 0:
-            newcoef.append(pol[i])
-        elif i < len(pol):
-            newcoef.append((ao * newcoef[i - 1]) + pol[i])
-    residuo = newcoef[-1]
+def syntheticdiv(dividend, divisor): # esta funcion hace divison sintetica                                          p
+    pol = list(dividend) # hago el polinomio                                                                        u
+    ao = divisor    # asigno el divisonr                                                                            t
+    newcoef = []    # creo el arreglo donde se van a guardar los resultados de la division                          o
+    for i in range(len(pol)):   # para cada elemento se hace la divison                                             E
+        if i == 0:  # siempre se baja el primer coeficiente en la division por default                              L
+            newcoef.append(pol[i])  # aqui se guarda nada mas                                                       I
+        elif i < len(pol):  # mientras que no se nos acabe el polinomio                                             U
+            newcoef.append((ao * newcoef[i - 1]) + pol[i])  # se realizan las operacines correspondientes
+    residuo = newcoef[-1]   # el residuo es la ultima posicion siempre
     print(f"Dividendo = {dividend}")
     print(f"Divisor = {divisor}")
     print(f'Resultado = {newcoef}')
@@ -90,7 +89,7 @@ def syntheticdiv(dividend, divisor):
     return newcoef
 
 
-def bisection1(a, b):
+def bisection(a, b):   # funcion de biseccion descargada de internet
     if p(a) * p(b) >= 0:
         print("You have not assumed right a and b\n")
         return
@@ -113,7 +112,7 @@ def bisection1(a, b):
     print("El valor de la raiz es : ", "%.4f" % c)
 
 
-def newtonraphson(x):
+def newtonraphson(x): # funcion de newton-Raphson descargada de internet
     P = p.deriv(1)
     h = p(x) / P(x)
     while abs(h) >= 0.0001:
@@ -125,13 +124,13 @@ def newtonraphson(x):
     print("El valor de la raiz es : %.4f" % x)
 
 
-if __name__ == '__main__':
-    p = np.poly1d(getcoef())
-    print(p)
-    a0 = p.coef[-1]
-    root = optimize.newton(p, -2, p.deriv(1))
-    print(root)
-    w = np.roots(p.coef).round(5)
-    for item in w:
+if __name__ == '__main__':  # función main
+    p = np.poly1d(getcoef())    # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
+    print("El polinomio original es:")
+    print(f"{p}\n")
+    a0 = p.coef[-1]     # a0 es nuestro intervalo mayor
+    root = optimize.newton(p, -50, p.deriv(1))  # fucncion de newton encontrada en una libreria (solo encuentra 1 root)
+    root1 = optimize.bisect(p, -2, 2)   # funcion de biseccion encontrada en una libreria (solo encuentra un root)
+    w = np.roots(p.coef).round(4)   # aqui saco todas las racies haciendo trampa
+    for item in w:  # imprimo cada raiz
         print('Las raiz es:', + item)
-
