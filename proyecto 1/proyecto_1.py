@@ -1,6 +1,8 @@
 import re
 import numpy.polynomial.polynomial as poly
 import numpy as np
+from scipy import optimize
+
 
 
 def getcoef():
@@ -8,13 +10,12 @@ def getcoef():
     get_coef = read_coef.read()
     read_coef.close()
 
-    temp = re.findall(r'(-?\d*)x', get_coef) + re.findall(r'(-?\d*) ', get_coef) # toma los coeficientes
+    temp = re.findall(r'(-?\d*)x', get_coef) + re.findall(r'(-?\d*) ', get_coef)  # toma los coeficientes
     pot = ("".join(re.findall(r'(\^\d*)', get_coef))).split("^")  # toma las potencias
 
     # arreglamos temp con espacio
     for i in range(len(temp)):
         if temp[i] == '' or temp[i] == '-':
-            #if temp[i] == '':
             temp[i] = 1
 
     potx = re.findall(r'(x\^)', get_coef)
@@ -32,7 +33,7 @@ def getcoef():
         potencias.append(0)
     elif len(pot1) == len(potx) and len(potx) == 1:
         print("es una unica x ")
-        bandera = True       # if True es ua sola x y puede (o no) contener algun otro termino
+        bandera = True  # if True es ua sola x y puede (o no) contener algun otro termino
 
     # def Dic
     # armamos el dicionario que relaciona coef y potencias
@@ -52,14 +53,14 @@ def getcoef():
     # def FixPotencias
     # Arregla las potencias ////////////////////////////////(fixpow)
     fixpow = []
-    for cont in range(grado+1):
+    for cont in range(grado + 1):
         fixpow.append(cont)
     fixpow.reverse()
 
     # def fixcoef
     # Arregla los coeficientes /////////////////////////////(fixcoef)
     fixcoef = []
-    for i in range(grado+1):
+    for i in range(grado + 1):
         if DicCoefPow.get(i) in coeficientes:
             fixcoef.append(DicCoefPow.get(i))
         else:
@@ -77,7 +78,7 @@ def syntheticdiv(dividend, divisor):
         if i == 0:
             newcoef.append(pol[i])
         elif i < len(pol):
-            newcoef.append((ao*newcoef[i-1]) + pol[i])
+            newcoef.append((ao * newcoef[i - 1]) + pol[i])
     residuo = newcoef[-1]
     print(f"Dividendo = {dividend}")
     print(f"Divisor = {divisor}")
@@ -109,100 +110,28 @@ def bisection1(a, b):
         else:
             a = c
 
-    print("The value of root is : ", "%.4f" % c)
+    print("El valor de la raiz es : ", "%.4f" % c)
 
 
+def newtonraphson(x):
+    P = p.deriv(1)
+    h = p(x) / P(x)
+    while abs(h) >= 0.0001:
+        h = p(x) / P(x)
 
-def bisection(f,a,b,N):
-    '''Approximate solution of f(x)=0 on interval [a,b] by bisection method.
+        # x(i+1) = x(i) - f(x) / f'(x)
+        x = x - h
 
-    Parameters
-    ----------
-    f : function
-        The function for which we are trying to approximate a solution f(x)=0.
-    a,b : numbers
-        The interval in which to search for a solution. The function returns
-        None if f(a)*f(b) >= 0 since a solution is not guaranteed.
-    N : (positive) integer
-        The number of iterations to implement.
-
-    Returns
-    -------
-    x_N : number
-        The midpoint of the Nth interval computed by the bisection method. The
-        initial interval [a_0,b_0] is given by [a,b]. If f(m_n) == 0 for some
-        midpoint m_n = (a_n + b_n)/2, then the function returns this solution.
-        If all signs of values f(a_n), f(b_n) and f(m_n) are the same at any
-        iteration, the bisection method fails and return None.
-'''
-    if f(a)*f(b) >= 0:
-        print("Bisection method fails.")
-        return None
-    a_n = a
-    b_n = b
-    for n in range(1,N+1):
-        m_n = (a_n + b_n)/2
-        f_m_n = f(m_n)
-        if f(a_n)*f_m_n < 0:
-            a_n = a_n
-            b_n = m_n
-        elif f(b_n)*f_m_n < 0:
-            a_n = m_n
-            b_n = b_n
-        elif f_m_n == 0:
-            print("Found exact solution.")
-            return m_n
-        else:
-            print("Bisection method fails.")
-            return None
-    return (a_n + b_n)/2
+    print("El valor de la raiz es : %.4f" % x)
 
 
 if __name__ == '__main__':
     p = np.poly1d(getcoef())
     print(p)
     a0 = p.coef[-1]
-    print(bisection(p,-a0,a0,30))
-    bisection1(-a0,a0)
-    if p.coef[0] < 0:
-        p = (-p)
-        a0 = p.coef[-1]
-        n = syntheticdiv(p.coef, a0)
-        while a0 != 0:
-            if all(i >= 0 for i in n):
-                a0 -= 1
-                # print(a0)
-                n = syntheticdiv(p.coef, a0)
-            else:
-                a0 += 1
-                #print(a0)
-                n = syntheticdiv(p.coef, a0)
-    else:
-        a0 = p.coef[-1]
-        n = syntheticdiv(p.coef, a0)
-        while a0 != 0:
-            if all(i >= 0 for i in n):
-                a0 -= 1
-                # print(a0)
-                n = syntheticdiv(p.coef, a0)
-            else:
-                a0 += 1
-                # print(a0)
-                n = syntheticdiv(p.coef, a0)
+    root = optimize.newton(p, -2, p.deriv(1))
+    print(root)
+    w = np.roots(p.coef).round(5)
+    for item in w:
+        print('Las raiz es:', + item)
 
-    '''if len(getcoef()) % 2 == 0:
-        getcoef()[:1]
-    else:
-        print(len(getcoef())+1)'''
-
-    a0 = p.coef[-1]
-    n = syntheticdiv(p.coef, a0)
-    while a0 != 0:
-        if all(i >= 0 for i in n):
-            a0 -= 1
-            # print(a0)
-            n = syntheticdiv(p.coef, a0)
-        else:
-            a0 += 1
-            # print(a0)
-            n = syntheticdiv(p.coef, a0)
