@@ -36,6 +36,7 @@ def getcoef(): # recuerda que si no hay termino independiente se le quita el esp
 
     # def Dic
     # armamos el dicionario que relaciona coef y potencias
+    global DicCoefPow
     if len(potencias) == len(coeficientes):
         DicCoefPow = dict(zip(potencias, coeficientes))
     else:
@@ -73,7 +74,7 @@ def getcoef(): # recuerda que si no hay termino independiente se le quita el esp
 
 def bisection(a, b):   # funcion de biseccion descargada de internet
     if p(a) * p(b) >= 0:    #si el polinomio evaluado en a*b es mayor o igual a 0
-        print("You have not assumed right a and b\n")   # intervalo invalido
+        #print("You have not assumed right a and b\n")   # intervalo invalido
         return
     c = a   #copiamos a en una nueva variable
 
@@ -92,7 +93,7 @@ def bisection(a, b):   # funcion de biseccion descargada de internet
         else:
             a = c
 
-    print("El valor de la raiz es : ", "%.4f" % c)
+    #print("El valor de la raiz es : ", "%.4f" % c)
     return c #retornamos el valor de la raiz
 
 
@@ -100,7 +101,7 @@ def bisection(a, b):   # funcion de biseccion descargada de internet
 # ao = divisor de la div sintetica
 # newcoef= aqui se guardan los resultados de la div sintetica (lista)
 # residuo= si es 0 es porque se encontro una raiz
-raices =  []  # lista con las raices
+
 def syntheticdiv(dividend, divisor): # esta funcion hace divison sintetica                                          p
     pol = list(dividend) # hago el polinomio                                                                        u
     a0 = divisor    # asigno el divisonr                                                                            t
@@ -112,14 +113,17 @@ def syntheticdiv(dividend, divisor): # esta funcion hace divison sintetica      
             newcoef.append((a0 * newcoef[i - 1]) + pol[i])  # se realizan las operacines correspondientes
     residuo = newcoef[-1]   # el residuo es la ultima posicion siempre
     # impresion de resultados
-    print(f"Dividendo = {dividend}")
-    print(f"Divisor = {divisor}")   # pol original
-    print(f'Resultado = {newcoef}')     # pol resultante
-    print(f'Residuo = {residuo}\n')
+    #print(f"Dividendo = {dividend}")
+    #print(f"Divisor = {divisor}")   # pol original
+    #print(f'Resultado = {newcoef}')     # pol resultante
+    #print(f'Residuo = {residuo}\n')
 
     for count in newcoef:   # por cada elemento en el resultado de la div sintetica
-        if count < 0:   # verificamos si es positivo
+        if count < 0:   # verificamos si es negativo
             n = bisection(a0, a0+1) # si no, mandamos ese divisior y el siguiennte a biseccion
+            if flag == True:
+                if n is not None:
+                    n = n * -1
             raices.append(n)    # agregamos a la lista de raices
             break   # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
 
@@ -136,7 +140,7 @@ def syntheticdiv(dividend, divisor): # esta funcion hace divison sintetica      
 
         sorted(set(Fixraices))     #elimina los elementos repetidos
 
-    print(f"Las Raices son = {Fixraices}")
+    #print(f"Las Raices son = {Fixraices}")
     return newcoef
 
 
@@ -149,7 +153,24 @@ def newtonraphson(x): # funcion de newton-Raphson descargada de internet
         # x(i+1) = x(i) - f(x`) / f'(x)
         x = x - h
 
-    print("El valor de la raiz es : %.4f" % x)
+    #print("El valor de la raiz es : %.4f" % x)
+    return x
+
+
+def pminus():
+    Pminus = getcoef()
+    reversed(Pminus)
+    for cont in reversed(range(grado+1)):  # refleja el polinomio en el eje dde las x   0,1,2,3       3,2,1,0
+        if (cont % 2) != 0 or cont == 0:
+            Pminus[cont] = Pminus[cont]*-1  #        = 1,0,-7,4
+    reversed(Pminus)
+    #DicCoefPow
+
+
+    if Pminus[0] < 0:
+        for j in range(grado+1):
+            Pminus[j] = (Pminus[j]*-1)
+    return Pminus
 
 
 if __name__ == '__main__':  # función main
@@ -157,20 +178,21 @@ if __name__ == '__main__':  # función main
     print("El polinomio original es:")
     print(f"{p}\n")
     a0 = p[-1]
-    # Pminus = polinomio volteado
-    Pminus = []
-    Pminus = getcoef()
+    raices = []  # lista con las raices
+    Iraices = []    # raices imaginarias
+    Pder = p.deriv(1)
+    flag = False
 
-    for i in range(100):    # asigno el numero de iteraciones de la buscqueda de raices
-        print(syntheticdiv(p, i))    # mando el polinomio y la iteracion a synteticdiv()
+    for i in range(25):    # asigno el numero de iteraciones de la buscqueda de raices
+        syntheticdiv(p, i)    # mando el polinomio y la iteracion a synteticdiv()
+    print(f"Las raices reales son {raices}")
+    com = optimize.newton(p, -100+1000j, Pder)
+    print(round(com.real, 4) + round(com.imag, 4) * 1j)
+
     print("------------------------------------------------------------------------------------------------------------")
-    #for i in range(100):
-    #   print(syntheticdiv(p, i*-1))
+    p = np.poly1d(pminus())    # polinomio invertido
+    flag = True
+    for i in range(25):
+        syntheticdiv(p, i)
 
-    for cont in range(grado): # refleja el polinomio en el eje dde las y
-        Pminus[cont] = Pminus[cont]*-1
-
-    #for i in range(100):
-    #    print(syntheticdiv(Pminus, i*-1))
-
-
+    print(f"Las raices reales son {raices}")
