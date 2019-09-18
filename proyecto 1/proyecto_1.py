@@ -105,12 +105,17 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
     pol = list(dividend)  # hago el polinomio                                                                        u
     a0 = divisor  # asigno el divisonr                                                                            t
     newcoef = []  # creo el arreglo donde se van a guardar los resultados de la division                          o
+
     for i in range(len(pol)):  # para cada elemento se hace la divison                                             E
         if i == 0:  # siempre se baja el primer coeficiente en la division por default                              L
             newcoef.append(pol[i])  # aqui se guarda nada mas                                                       I
         elif i < len(pol):  # mientras que no se nos acabe el polinomio                                             U
             newcoef.append((a0 * newcoef[i - 1]) + pol[i])  # se realizan las operacines correspondientes
     residuo = newcoef[-1]  # el residuo es la ultima posicion siempre
+
+    m = optimize.newton(p, a0 + 1j, Pder)
+    mnew = round(m.real, 4) + round(m.imag, 4) * 1j
+    Iraices.append(mnew)
 
     for count in newcoef:  # por cada elemento en el resultado de la div sintetica
         if count < 0:  # verificamos si es negativo
@@ -119,23 +124,12 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
                 if n is not None:
                     n = n * -1
             raices.append(n)  # agregamos a la lista de raices
+
             break  # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
 
     if residuo == 0:  # si encontramos una raiz
         raices.append(a0)  # la agregamos
         print(f'{a0} es una raiz real')
-
-    Fixraices = []  # lista de las raices con los decimales deseados
-    for i in raices:  # este ciclo remueve los None de la lista de raices
-        if i is None:
-            raices.remove(i)
-        else:
-            Fixraices.append(i)
-
-        sorted(set(Fixraices))  # elimina los elementos repetidos
-
-    # print(f"Las Raices son = {Fixraices}")
-    return newcoef
 
 
 def newtonraphson(x):  # funcion de newton-Raphson descargada de internet
@@ -178,6 +172,24 @@ def pminus():
     return pmenos
 
 
+def Newton(f, dfdx, x, eps):
+    f_value = f(x)
+    iteration_counter = 0
+    while abs(f_value) > eps and iteration_counter < 100:
+        try:
+            x = x - float(f_value)/dfdx(x)
+        except ZeroDivisionError:
+            print("Error! - derivative zero for x = ", x)
+
+        f_value = f(x)
+        iteration_counter += 1
+
+    # Here, either a solution is found, or too many iterations
+    if abs(f_value) > eps:
+        iteration_counter = -1
+    return x, iteration_counter
+
+
 if __name__ == '__main__':  # función main
     p = np.poly1d(getcoef())  # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
     print("El polinomio original es:")
@@ -190,12 +202,12 @@ if __name__ == '__main__':  # función main
 
     for i in range(25):  # asigno el numero de iteraciones de la buscqueda de raices
         syntheticdiv(p, i)  # mando el polinomio y la iteracion a synteticdiv()
-    com = optimize.newton(p, -100 + 1000j, Pder)
-    print(round(com.real, 4) + round(com.imag, 4) * 1j)
 
     p = np.poly1d(pminus())  # polinomio invertido
+    Pder = p.deriv(1)
     flag = True
     for i in range(25):
         syntheticdiv(p, i)
 
     print(f"Las raices reales son {raices}")
+    print(f"Las raices por Newton-Raphson son {Iraices}")
