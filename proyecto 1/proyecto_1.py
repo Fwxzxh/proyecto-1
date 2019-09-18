@@ -4,7 +4,7 @@ import numpy as np
 from scipy import optimize
 
 
-def getcoef(): # recuerda que si no hay termino independiente se le quita el espacio al final de la funcion
+def getcoef():  # recuerda que si no hay termino independiente se le quita el espacio al final de la funcion
     read_coef = open("C:\\Archivos\\coeficientes.txt", "r", encoding="utf-8")
     get_coef = read_coef.read()
     read_coef.close()
@@ -14,12 +14,13 @@ def getcoef(): # recuerda que si no hay termino independiente se le quita el esp
 
     # arreglamos temp con espacio
     for i in range(len(temp)):
-        if temp[i] == '' or temp[i] == '-':
+        if temp[i] == '':
             temp[i] = 1
-
+        elif temp[i] == '-':
+            temp[i] == -1
     potx = re.findall(r'(x\^)', get_coef)
     pot1 = re.findall(r'(x\d*)', get_coef)
-
+    global coeficientes
     del pot[0]  # borra un lugar de la lista ocupado por un espacio en blanco
     potencias = list(map(int, pot))  # convierte la lista de strings de potencias en lista de ints
     coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficientes en lista de ints
@@ -45,7 +46,6 @@ def getcoef(): # recuerda que si no hay termino independiente se le quita el esp
         DicCoefPow = dict(zip(potencias, coeficientes))
         potencias.remove(0)  # quito el cero que agregue arriba para que la variable potencias solo tengapotencias
         # necesaria
-
     global grado
     potencias.sort()
     potencias.reverse()
@@ -71,12 +71,11 @@ def getcoef(): # recuerda que si no hay termino independiente se le quita el esp
     return fixcoef
 
 
-
-def bisection(a, b):   # funcion de biseccion descargada de internet
-    if p(a) * p(b) >= 0:    #si el polinomio evaluado en a*b es mayor o igual a 0
-        #print("You have not assumed right a and b\n")   # intervalo invalido
+def bisection(a, b):  # funcion de biseccion descargada de internet
+    if p(a) * p(b) >= 0:  # si el polinomio evaluado en a*b es mayor o igual a 0
+        # print("You have not assumed right a and b\n")   # intervalo invalido
         return
-    c = a   #copiamos a en una nueva variable
+    c = a  # copiamos a en una nueva variable
 
     while (b - a) >= 0.01:  # mientras b-a esten en un rango aceptable
 
@@ -93,8 +92,8 @@ def bisection(a, b):   # funcion de biseccion descargada de internet
         else:
             a = c
 
-    #print("El valor de la raiz es : ", "%.4f" % c)
-    return c #retornamos el valor de la raiz
+    # print("El valor de la raiz es : ", "%.4f" % c)
+    return c  # retornamos el valor de la raiz
 
 
 # pol= polinimio para div sintetica
@@ -102,50 +101,45 @@ def bisection(a, b):   # funcion de biseccion descargada de internet
 # newcoef= aqui se guardan los resultados de la div sintetica (lista)
 # residuo= si es 0 es porque se encontro una raiz
 
-def syntheticdiv(dividend, divisor): # esta funcion hace divison sintetica                                          p
-    pol = list(dividend) # hago el polinomio                                                                        u
-    a0 = divisor    # asigno el divisonr                                                                            t
-    newcoef = []    # creo el arreglo donde se van a guardar los resultados de la division                          o
-    for i in range(len(pol)):   # para cada elemento se hace la divison                                             E
+def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica                                          p
+    pol = list(dividend)  # hago el polinomio                                                                        u
+    a0 = divisor  # asigno el divisonr                                                                            t
+    newcoef = []  # creo el arreglo donde se van a guardar los resultados de la division                          o
+    for i in range(len(pol)):  # para cada elemento se hace la divison                                             E
         if i == 0:  # siempre se baja el primer coeficiente en la division por default                              L
             newcoef.append(pol[i])  # aqui se guarda nada mas                                                       I
         elif i < len(pol):  # mientras que no se nos acabe el polinomio                                             U
             newcoef.append((a0 * newcoef[i - 1]) + pol[i])  # se realizan las operacines correspondientes
-    residuo = newcoef[-1]   # el residuo es la ultima posicion siempre
-    # impresion de resultados
-    #print(f"Dividendo = {dividend}")
-    #print(f"Divisor = {divisor}")   # pol original
-    #print(f'Resultado = {newcoef}')     # pol resultante
-    #print(f'Residuo = {residuo}\n')
+    residuo = newcoef[-1]  # el residuo es la ultima posicion siempre
 
-    for count in newcoef:   # por cada elemento en el resultado de la div sintetica
-        if count < 0:   # verificamos si es negativo
-            n = bisection(a0, a0+1) # si no, mandamos ese divisior y el siguiennte a biseccion
-            if flag == True:
+    for count in newcoef:  # por cada elemento en el resultado de la div sintetica
+        if count < 0:  # verificamos si es negativo
+            n = bisection(a0, a0 + 1)  # si no, mandamos ese divisior y el siguiennte a biseccion
+            if flag is True:
                 if n is not None:
                     n = n * -1
-            raices.append(n)    # agregamos a la lista de raices
-            break   # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
+            raices.append(n)  # agregamos a la lista de raices
+            break  # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
 
-    if residuo == 0:    # si encontramos una raiz
-        raices.append(a0)   # la agregamos
+    if residuo == 0:  # si encontramos una raiz
+        raices.append(a0)  # la agregamos
         print(f'{a0} es una raiz real')
 
     Fixraices = []  # lista de las raices con los decimales deseados
-    for i in raices:    # este ciclo remueve los None de la lista de raices
-        if i == None:
+    for i in raices:  # este ciclo remueve los None de la lista de raices
+        if i is None:
             raices.remove(i)
         else:
             Fixraices.append(i)
 
-        sorted(set(Fixraices))     #elimina los elementos repetidos
+        sorted(set(Fixraices))  # elimina los elementos repetidos
 
-    #print(f"Las Raices son = {Fixraices}")
+    # print(f"Las Raices son = {Fixraices}")
     return newcoef
 
 
-def newtonraphson(x): # funcion de newton-Raphson descargada de internet
-    P = p.deriv(1)  #primera derivada del polinomio p guardada en MAYUS p
+def newtonraphson(x):  # funcion de newton-Raphson descargada de internet
+    P = p.deriv(1)  # primera derivada del polinomio p guardada en MAYUS p
     h = p(x) / P(x)
     while abs(h) >= 0.0001:
         h = p(x) / P(x)
@@ -153,44 +147,53 @@ def newtonraphson(x): # funcion de newton-Raphson descargada de internet
         # x(i+1) = x(i) - f(x`) / f'(x)
         x = x - h
 
-    #print("El valor de la raiz es : %.4f" % x)
+    # print("El valor de la raiz es : %.4f" % x)
     return x
 
 
 def pminus():
-    Pminus = getcoef()
-    reversed(Pminus)
-    for cont in reversed(range(grado+1)):  # refleja el polinomio en el eje dde las x   0,1,2,3       3,2,1,0
-        if (cont % 2) != 0 or cont == 0:
-            Pminus[cont] = Pminus[cont]*-1  #        = 1,0,-7,4
-    reversed(Pminus)
-    #DicCoefPow
 
+    for key in DicCoefPow.keys():
+        if key % 2 is not 0:
+            DicCoefPow[key] *= -1
+    Pminusminus=[]
+    for k in range(grado + 1):
+        if DicCoefPow.get(k) in coeficientes * -1 or coeficientes:
+            Pminusminus.append(DicCoefPow.get(k))
+        else:
+            Pminusminus.append(0)
+    Pminusminus.reverse()
+    pmenos = []
 
-    if Pminus[0] < 0:
-        for j in range(grado+1):
-            Pminus[j] = (Pminus[j]*-1)
-    return Pminus
+    for j in range(grado+1):
+        if Pminusminus[j] is not None:
+            pmenos.append(Pminusminus[j])
+        elif Pminusminus[j] is None:
+            pmenos.append(0)
+
+    if pmenos[0] < 0:
+        for j in range(grado + 1):
+            pmenos[j] = (pmenos[j] * -1)
+
+    return pmenos
 
 
 if __name__ == '__main__':  # función main
-    p = np.poly1d(getcoef())    # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
+    p = np.poly1d(getcoef())  # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
     print("El polinomio original es:")
     print(f"{p}\n")
-    a0 = p[-1]
+
     raices = []  # lista con las raices
-    Iraices = []    # raices imaginarias
+    Iraices = []  # raices imaginarias
     Pder = p.deriv(1)
     flag = False
 
-    for i in range(25):    # asigno el numero de iteraciones de la buscqueda de raices
-        syntheticdiv(p, i)    # mando el polinomio y la iteracion a synteticdiv()
-    print(f"Las raices reales son {raices}")
-    com = optimize.newton(p, -100+1000j, Pder)
+    for i in range(25):  # asigno el numero de iteraciones de la buscqueda de raices
+        syntheticdiv(p, i)  # mando el polinomio y la iteracion a synteticdiv()
+    com = optimize.newton(p, -100 + 1000j, Pder)
     print(round(com.real, 4) + round(com.imag, 4) * 1j)
 
-    print("------------------------------------------------------------------------------------------------------------")
-    p = np.poly1d(pminus())    # polinomio invertido
+    p = np.poly1d(pminus())  # polinomio invertido
     flag = True
     for i in range(25):
         syntheticdiv(p, i)
