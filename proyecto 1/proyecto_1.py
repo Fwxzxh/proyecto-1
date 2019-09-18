@@ -20,7 +20,9 @@ def getcoef():  # recuerda que si no hay termino independiente se le quita el es
             temp[i] == -1
     potx = re.findall(r'(x\^)', get_coef)
     pot1 = re.findall(r'(x\d*)', get_coef)
+
     global coeficientes
+
     del pot[0]  # borra un lugar de la lista ocupado por un espacio en blanco
     potencias = list(map(int, pot))  # convierte la lista de strings de potencias en lista de ints
     coeficientes = list(map(int, temp))  # convierte la lista de strings de coeficientes en lista de ints
@@ -113,17 +115,21 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
             newcoef.append((a0 * newcoef[i - 1]) + pol[i])  # se realizan las operacines correspondientes
     residuo = newcoef[-1]  # el residuo es la ultima posicion siempre
 
-    m = optimize.newton(p, a0 + 1j, Pder)
-    mnew = round(m.real, 4) + round(m.imag, 4) * 1j
-    Iraices.append(mnew)
+    '''m = optimize.newton(p, a0 + 1j, Pder)
+    real = round(m.real, 4)
+    img = round(m.imag, 4)
+    if real not in Iraices and img not in Iraices:
+        Iraices.append(round(m.real, 4) + round(m.imag, 4) * 1j)'''
 
     for count in newcoef:  # por cada elemento en el resultado de la div sintetica
         if count < 0:  # verificamos si es negativo
             n = bisection(a0, a0 + 1)  # si no, mandamos ese divisior y el siguiennte a biseccion
             if flag is True:
                 if n is not None:
-                    n = n * -1
+                    n *= -1
+
             raices.append(n)  # agregamos a la lista de raices
+            raices.sort()
 
             break  # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
 
@@ -134,7 +140,7 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
     Fixraices = []
     for i in raices:
         if i is None:
-                raices.remove(i)
+            raices.remove(i)
         else:
             Fixraices.append(i)
         sorted(set(Fixraices))
@@ -155,11 +161,10 @@ def newtonraphson(x):  # funcion de newton-Raphson descargada de internet
 
 
 def pminus():
-
     for key in DicCoefPow.keys():
         if key % 2 is not 0:
             DicCoefPow[key] *= -1
-    Pminusminus=[]
+    Pminusminus = []
     for k in range(grado + 1):
         if DicCoefPow.get(k) in coeficientes * -1 or coeficientes:
             Pminusminus.append(DicCoefPow.get(k))
@@ -168,7 +173,7 @@ def pminus():
     Pminusminus.reverse()
     pmenos = []
 
-    for j in range(grado+1):
+    for j in range(grado + 1):
         if Pminusminus[j] is not None:
             pmenos.append(Pminusminus[j])
         elif Pminusminus[j] is None:
@@ -186,7 +191,7 @@ def Newton(f, dfdx, x, eps):
     iteration_counter = 0
     while abs(f_value) > eps and iteration_counter < 100:
         try:
-            x = x - float(f_value)/dfdx(x)
+            x = x - float(f_value) / dfdx(x)
         except ZeroDivisionError:
             print("Error! - derivative zero for x = ", x)
 
@@ -206,8 +211,25 @@ if __name__ == '__main__':  # función main
 
     raices = []  # lista con las raices
     Iraices = []  # raices imaginarias
+    iraci = []
     Pder = p.deriv(1)
     flag = False
+    flag1 = False
+
+    for j in range(-5,5,1):
+        m = optimize.newton(p, j+1j, Pder)
+        real = round(m.real, 6)
+        img = float("{0:.5f}".format(m.imag)) * 1j
+        # img = round(m.imag, 4) *1j
+
+        if real not in Iraices:
+            Iraices.append(real)
+
+        if img not in iraci:
+            iraci.append(img)
+            iraci.append(-img)
+
+    print(p.r)
 
     for i in range(25):  # asigno el numero de iteraciones de la buscqueda de raices
         syntheticdiv(p, i)  # mando el polinomio y la iteracion a synteticdiv()
@@ -215,8 +237,12 @@ if __name__ == '__main__':  # función main
     p = np.poly1d(pminus())  # polinomio invertido
     Pder = p.deriv(1)
     flag = True
+    flag1 = True
+
     for i in range(25):
         syntheticdiv(p, i)
 
-    print(f"Las raices reales son {raices}")
-    print(f"Las raices por Newton-Raphson son {Iraices}")
+    print(f"\nLas raices reales por Biseccion son: {raices}")
+    print(f"Las raices por Newton-Raphson son: {Iraices}")
+    print(f"                          {iraci} ")
+
