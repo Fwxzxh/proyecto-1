@@ -129,7 +129,7 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
                     n *= -1
 
             raices.append(n)  # agregamos a la lista de raices
-            raices.sort()
+            #raices.sort()
 
             break  # nos salimos del ciclo porque ya encontramos la raiz en ese intervalo
 
@@ -204,6 +204,52 @@ def Newton(f, dfdx, x, eps):
     return x, iteration_counter
 
 
+def maxminf():
+    maximos = []
+    minimos = []
+    Pinflex = []
+    df = p.deriv(1)  # calculamos la primera derivada
+    d2f = p.deriv(2)  # calcilamos la segunda derivada
+    d3f = p.deriv(3)
+
+    maxmin = np.roots(df)
+    for i in range(len(maxmin)):
+        if np.polyval(d2f, maxmin[i]) > 0:
+            minimos.append(maxmin[i])
+        else:
+            maximos.append(maxmin[i])
+    # puntos de inflecion
+    inflex = np.roots(d2f)
+    for i in range(len(inflex)):
+        if np.polyval(d3f, inflex[i]) != 0:
+            Pinflex.append(inflex[i])
+
+    # imprimimos maximos y minimos en intervalos
+    for i in range(len(maximos)):
+        print(f"Los maximos son ({maximos[i]}, {np.polyval(p, maximos[i])})")
+    for i in range(len(minimos)):
+        print(f"Los minimos son ({minimos[i]}, {np.polyval(p, minimos[i])})")
+
+    print(f"Los puntos de infleccion son: ")
+    for i in range(len(Pinflex)):
+        print(f"({i}, {np.polyval(p,i)})")
+
+    print("***Intervalos de crecimiento***")
+    # sacamos intervalos de crecimiento y decrecimiento
+    for i in maxmin:
+            if np.polyval(df, i+1) > 0 and np.polyval(df, i-1) < 0:
+                print(f'(Decrece,({i}, {np.polyval(p, i)}), Crece)')
+            if np.polyval(df, i + 1) < 0 and np.polyval(df, i - 1) > 0:
+                print(f'(Crece,({i}, {np.polyval(p, i)}), Decrece)')
+    print("***Intervalos de concavidad***")
+    # sacamos intervalos de concavidad
+    for i in range(len(Pinflex)):
+        if np.polyval(d2f, i+1) < 0 :
+            print(f"Es concaba despues de ({i},{np.polyval(p,i)} y convexa antes de ({i},{np.polyval(p,i)})")
+        if np.polyval(d2f, i+1) >0:
+            print(f"Es Convexa despues de ({i},{np.polyval(p, i)}) y concava antes de ({i},{np.polyval(p, i)}) ")
+
+
 if __name__ == '__main__':  # función main
     p = np.poly1d(getcoef())  # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
     print("El polinomio original es:")
@@ -229,11 +275,11 @@ if __name__ == '__main__':  # función main
             iraci.append(img)
             iraci.append(-img)
 
-    print(p.r)
-
     for i in range(25):  # asigno el numero de iteraciones de la buscqueda de raices
         syntheticdiv(p, i)  # mando el polinomio y la iteracion a synteticdiv()
-
+    maxminf() #---------------------------
+    print("\nTodas las raices son:")
+    print(p.r)
     p = np.poly1d(pminus())  # polinomio invertido
     Pder = p.deriv(1)
     flag = True
@@ -242,7 +288,8 @@ if __name__ == '__main__':  # función main
     for i in range(25):
         syntheticdiv(p, i)
 
-    print(f"\nLas raices reales por Biseccion son: {raices}")
+
+    print(f"Las raices reales por Biseccion son: {raices}")
     print(f"Las raices por Newton-Raphson son: {Iraices}")
     print(f"                          {iraci} ")
 
