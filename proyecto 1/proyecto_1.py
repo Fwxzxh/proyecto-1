@@ -131,6 +131,15 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
         raices.append(a0)  # la agregamos
         print(f'{a0} es una raiz real')
 
+    Fixraices = []
+    for i in raices:
+        if i is None:
+                raices.remove(i)
+        else:
+            Fixraices.append(i)
+        sorted(set(Fixraices))
+    return newcoef
+
 
 def newtonraphson(x):  # funcion de newton-Raphson descargada de internet
     P = p.deriv(1)  # primera derivada del polinomio p guardada en MAYUS p
