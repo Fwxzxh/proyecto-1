@@ -1,6 +1,5 @@
-import re
-import numpy.polynomial.polynomial as poly
 import numpy as np
+import re
 from scipy import optimize
 
 
@@ -35,7 +34,7 @@ def getcoef():  # recuerda que si no hay termino independiente se le quita el es
         potencias.append(0)
     elif len(pot1) == len(potx) and len(potx) == 1:
         print("es una unica x ")
-        bandera = True  # if True es ua sola x y puede (o no) contener algun otro termino
+        bandera = True  # if True es ua sola x y puede (o no) contener algun otro termino<
 
     # def Dic
     # armamos el dicionario que relaciona coef y potencias
@@ -73,22 +72,20 @@ def getcoef():  # recuerda que si no hay termino independiente se le quita el es
     return fixcoef
 
 
-def bisection(a, b):  # funcion de biseccion descargada de internet
+def bisection(a, b):
     if p(a) * p(b) >= 0:  # si el polinomio evaluado en a*b es mayor o igual a 0
-        # print("You have not assumed right a and b\n")   # intervalo invalido
         return
     c = a  # copiamos a en una nueva variable
 
     while (b - a) >= 0.01:  # mientras b-a esten en un rango aceptable
 
-        # Find middle point
+        # Encuentra punto medio
         c = (a + b) / 2
 
-        # Check if middle point is root
+        # Checa si el punto medio es una raiz
         if p(c) == 0.0:
             break
 
-        # Decide the side to repeat the steps
         if p(c) * p(a) < 0:
             b = c
         else:
@@ -147,19 +144,6 @@ def syntheticdiv(dividend, divisor):  # esta funcion hace divison sintetica     
     return newcoef
 
 
-def newtonraphson(x):  # funcion de newton-Raphson descargada de internet
-    P = p.deriv(1)  # primera derivada del polinomio p guardada en MAYUS p
-    h = p(x) / P(x)
-    while abs(h) >= 0.0001:
-        h = p(x) / P(x)
-
-        # x(i+1) = x(i) - f(x`) / f'(x)
-        x = x - h
-
-    # print("El valor de la raiz es : %.4f" % x)
-    return x
-
-
 def pminus():
     for key in DicCoefPow.keys():
         if key % 2 is not 0:
@@ -186,19 +170,18 @@ def pminus():
     return pmenos
 
 
-def Newton(f, dfdx, x, eps):
+def newton(f, dfdx, x, eps):
     f_value = f(x)
     iteration_counter = 0
     while abs(f_value) > eps and iteration_counter < 100:
         try:
             x = x - float(f_value) / dfdx(x)
         except ZeroDivisionError:
-            print("Error! - derivative zero for x = ", x)
+            print("Derivada fue cero para x = ", x)
 
         f_value = f(x)
         iteration_counter += 1
 
-    # Here, either a solution is found, or too many iterations
     if abs(f_value) > eps:
         iteration_counter = -1
     return x, iteration_counter
@@ -254,7 +237,8 @@ if __name__ == '__main__':  # función main
     p = np.poly1d(getcoef())  # p es nuestro polinomio, lo obtenemos de los coeficientes de la funcion getcoef()
     print("El polinomio original es:")
     print(f"{p}\n")
-
+    a0 = p[-1]
+    af = a0 * -1
     raices = []  # lista con las raices
     Iraices = []  # raices imaginarias
     iraci = []
@@ -287,7 +271,6 @@ if __name__ == '__main__':  # función main
 
     for i in range(25):
         syntheticdiv(p, i)
-
 
     print(f"Las raices reales por Biseccion son: {raices}")
     print(f"Las raices por Newton-Raphson son: {Iraices}")
